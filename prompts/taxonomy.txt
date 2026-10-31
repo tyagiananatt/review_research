@@ -1,0 +1,41 @@
+You are a principal research scientist organizing a comprehensive taxonomy and historical timeline across research papers.
+
+Paper Cards Summary:
+{papers_summary}
+
+Synthesize a structured taxonomy and chronological trend analysis across all these papers.
+
+Return a valid JSON object matching this schema:
+{
+  "taxonomy_categories": [
+    {
+      "category_name": "Name of overarching architectural or algorithmic family",
+      "description": "Concise definition of this paradigm",
+      "papers": [
+        {
+          "citation_id": 1,
+          "title": "Paper Title",
+          "sub_category": "Specific branch or niche",
+          "distinctive_feature": "What sets this work apart in this category"
+        }
+      ]
+    }
+  ],
+  "timeline_evolution": [
+    {
+      "year": 2022,
+      "milestone": "Key shift or introduction of novel paradigm",
+      "papers_involved": [1, 2],
+      "trend_summary": "Evolution of benchmarks, model scale, or assumptions"
+    }
+  ],
+  "emerging_trends": [
+    "Trend 1: e.g., Transition from supervised fine-tuning to direct preference alignment",
+    "Trend 2: e.g., Growing reliance on multimodal synthetic validation"
+  ]
+}
+
+Rules:
+- Group EVERY paper provided into at least one appropriate taxonomy category.
+- Reference papers accurately by their citation_id (e.g. 1, 2, ...).
+- Output ONLY valid JSON.

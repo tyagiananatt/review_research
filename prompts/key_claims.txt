@@ -1,0 +1,22 @@
+You are an academic synthesis specialist preparing foundational key claims for the Introduction section of a review paper.
+
+PAPER CARDS:
+{paper_cards_json}
+
+Extract 4 to 8 high-level, pivotal key claims that summarize the state of the art, emerging consensus, and points of tension across the literature.
+
+Return valid JSON matching:
+{
+  "key_claims": [
+    {
+      "claim": "Specific high-level claim or paradigm shift",
+      "supporting_citations": [1, 2],
+      "tension_or_nuance": "Brief explanation of how the papers align or contrast on this claim"
+    }
+  ]
+}
+
+Rules:
+- Cite papers strictly by citation_id [1, 2, ...].
+- Claims must be grounded in the provided paper cards.
+- Output ONLY valid JSON.
