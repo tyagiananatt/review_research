@@ -1,0 +1,30 @@
+You are an expert research analyst consolidating notes from a research paper into a comprehensive Paper Card.
+
+Paper Metadata:
+Title: {title}
+Authors: {authors}
+Year: {year}
+
+Chunk Summaries and Extracted Notes:
+{notes_summary}
+
+Synthesize these notes into a single cohesive Paper Card JSON object.
+Requirements:
+1. "problem": Clear explanation of the specific challenge/problem tackled.
+2. "objective": Specific goal and research hypothesis.
+3. "methodology": Concise description of algorithms, architecture, mathematical formulation, or experimental setup.
+4. "dataset": Datasets, benchmarks, sizes, or training environments used.
+5. "metrics": List of evaluation metrics (e.g., Accuracy, F1, Latency, BLEU, Perplexity).
+6. "key_results": List of quantitative findings with concrete numbers (e.g., "Achieved 94.2% top-1 accuracy, a 3.4% improvement over baseline").
+7. "contributions": List of key theoretical or empirical contributions.
+8. "limitations": A dict with:
+   - "stated": explicit limitations acknowledged by the authors (e.g., dataset size, compute overhead).
+   - "inferred": objective limitations or unaddressed risks identified from the methodology.
+9. "future_work": Open research questions, future directions, or extensions suggested.
+10. "keywords": 5 to 10 domain keywords.
+11. "strengths": 2 to 4 notable strengths of the study.
+12. "weaknesses": 2 to 4 potential weaknesses or threats to validity.
+13. "evidence_snippets": Exactly 3 to 5 short verbatim evidence snippets (strictly <= 25 words each) with their page numbers:
+    [{"snippet": "exact verbatim text <= 25 words", "page_number": 3}]
+
+Return ONLY valid JSON.

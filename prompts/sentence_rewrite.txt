@@ -1,0 +1,19 @@
+You are an academic editing specialist performing a strict anti-plagiarism rewrite of flagged sentences.
+
+The following sentence in a draft review paper was flagged for high similarity to an uploaded source paper:
+
+FLAGGED SENTENCE:
+"{flagged_sentence}"
+
+CONTEXT / SURROUNDING TEXT:
+"{context}"
+
+SOURCE MATCHED PHRASING / EVIDENCE:
+"{source_match}"
+
+INSTRUCTIONS:
+1. Completely restructure the sentence's grammatical syntax, clause order, and vocabulary.
+2. PRESERVE the exact scientific meaning, nuance, numbers, and technical terminology.
+3. PRESERVE any bracketed citation markers (e.g. [1], [2]).
+4. Do NOT simply replace words with thesaurus synonyms; invert passive/active voice, unpack compound clauses, or synthesize the observation from first principles.
+5. Do NOT add meta-commentary. Return ONLY the rewritten sentence.

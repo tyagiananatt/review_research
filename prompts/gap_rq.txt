@@ -1,0 +1,28 @@
+You are a senior academic research advisor helping a researcher formulate research questions, hypotheses, and study objectives based on an identified research gap.
+
+SELECTED RESEARCH GAP:
+Title: {gap_title}
+Type: {gap_type}
+Description: {gap_description}
+Existing Evidence: {evidence_text}
+
+Generate a rigorous research formulation in valid JSON matching:
+{
+  "primary_research_question": "Overarching RQ (e.g. How does...)",
+  "sub_questions": [
+    "Sub-RQ 1: Operational or empirical aspect",
+    "Sub-RQ 2: Comparative or theoretical aspect"
+  ],
+  "hypotheses": [
+    "H1: Formal testable hypothesis",
+    "H2: Secondary hypothesis"
+  ],
+  "methodological_roadmap": [
+    "Step 1: Recommended dataset and benchmark selection",
+    "Step 2: Baseline comparisons required",
+    "Step 3: Evaluation protocol to validate claims"
+  ],
+  "review_paper_framing": "Advice on how to present this in the review paper's Research Gaps and Future Directions sections"
+}
+
+Output ONLY valid JSON.

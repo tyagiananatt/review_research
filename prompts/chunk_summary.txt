@@ -1,0 +1,31 @@
+You are an academic research assistant analyzing a section of a research paper.
+Your task is to extract dense, structured notes from this specific chunk.
+
+Paper Chunk Content:
+{chunk_text}
+
+Chunk Page Range: Pages {start_page} to {end_page}
+
+Extract the following in valid JSON:
+{
+  "problem_statements": ["Specific problem or research question discussed"],
+  "objectives": ["Key goals or hypotheses discussed"],
+  "methodology_points": ["Specific algorithms, architectures, techniques, or experimental setups"],
+  "datasets_used": ["Names and specs of datasets, benchmarks, or environments"],
+  "metrics_evaluated": ["Evaluation metrics mentioned, e.g. F1, BLEU, accuracy, latency"],
+  "key_findings": ["Specific findings or quantitative results mentioned in this chunk (include numbers)"],
+  "limitations_found": ["Explicitly stated limitations, bottlenecks, or observed weaknesses"],
+  "future_work_items": ["Open directions, future experiments, or unanswered questions proposed"],
+  "keywords": ["Domain keywords, technique names, or acronyms"],
+  "evidence_snippets": [
+    {
+      "snippet": "Short verbatim snippet <= 25 words",
+      "page_number": {start_page}
+    }
+  ]
+}
+
+Rules:
+- Be precise and objective.
+- If a category is not discussed in this chunk, return an empty list [].
+- Output ONLY valid JSON.
