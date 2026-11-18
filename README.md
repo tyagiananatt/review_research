@@ -192,6 +192,15 @@ streamlit run app.py
 
 The web application will open in your browser at `http://localhost:8501`.
 
+#### 🔐 Authentication & Demo Access
+ReviewForge features a modern authentication gate protecting the application:
+- **Continue with Google**: Instant single-click authentication via Google OAuth (or Google Verified Scholar mode in local development).
+- **Username & Password**:
+  - **Demo Username**: `demo`
+  - **Demo Password**: `demo123`
+- **1-Click Instant Demo Login**: Use the pre-configured quick demo button to bypass manual entry and test immediately.
+- **Session Profile & Sign Out**: Logged-in profile badge and sign-out controls are accessible directly at the top of the sidebar.
+
 ---
 
 ## 🧪 Running Unit & Integration Tests
