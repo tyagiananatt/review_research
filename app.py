@@ -972,7 +972,7 @@ with st.sidebar:
     st.markdown("---")
 
     if not _keys_configured():
-        st.error("No API key found. Add GEMINI_KEYS or GROQ_KEYS to your .env file and restart.")
+        st.error("No API key found. Set the GEMINI_KEYS or GROQ_KEYS environment variable and restart the app.")
 
     st.markdown("---")
 
@@ -1103,8 +1103,8 @@ if stage == "input":
     if not _keys_configured():
         st.markdown(
             '<div class="banner-info">'
-            '<strong>API Key Required</strong> &mdash; Add <code>GEMINI_KEYS</code> or '
-            '<code>GROQ_KEYS</code> to your <code>.env</code> file and restart the app.'
+            '<strong>API Key Required</strong> &mdash; Set the <code>GEMINI_KEYS</code> or '
+            '<code>GROQ_KEYS</code> environment variable (or add them to a <code>.env</code> file).'
             '</div>',
             unsafe_allow_html=True,
         )
@@ -1113,7 +1113,7 @@ if stage == "input":
         if not topic_input.strip():
             st.error("Please enter a research topic.")
         elif not _keys_configured():
-            st.error("Add an API key in the sidebar first.")
+            st.error("Add a GEMINI_KEYS or GROQ_KEYS API key first.")
         else:
             st.session_state["topic"] = topic_input.strip()
             st.session_state["description"] = desc_input.strip()

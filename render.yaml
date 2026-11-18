@@ -1,0 +1,23 @@
+# Render Blueprint for ReviewForge
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Deploy: push this repo to GitHub, then in the Render dashboard choose
+# "New +" -> "Blueprint" and select the repo. Render reads this file.
+# The two API-key variables are marked `sync: false`, so Render asks you for
+# their values during setup and never stores them in git.
+services:
+  - type: web
+    name: reviewforge
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    healthCheckPath: /_stcore/health
+    autoDeploy: true
+    envVars:
+      - key: AI_PROVIDER
+        value: auto
+      - key: GEMINI_KEYS
+        sync: false
+      - key: GROQ_KEYS
+        sync: false

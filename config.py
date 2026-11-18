@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, Optional
 
 try:
     from dotenv import load_dotenv
@@ -15,17 +15,16 @@ except ImportError:
 # Base directories
 BASE_DIR = Path(__file__).resolve().parent
 PROMPTS_DIR = BASE_DIR / "prompts"
-DATA_DIR = BASE_DIR / "data"
-DATA_DIR.mkdir(exist_ok=True)
+DATA_DIR = Path(os.getenv("REVIEWFORGE_DATA_DIR") or (BASE_DIR / "data"))
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 DB_PATH = DATA_DIR / "reviewforge.db"
 
 # LLM & Model Chain
-PRIMARY_MODEL = os.getenv("GEMINI_PRIMARY_MODEL", "gemini-3.8-flash")
-FALLBACK_MODEL = os.getenv("GEMINI_FALLBACK_MODEL", "gemini-3.5-flash-lite")
+PRIMARY_MODEL = os.getenv("GEMINI_PRIMARY_MODEL", "gemini-2.5-flash")
+FALLBACK_MODEL = os.getenv("GEMINI_FALLBACK_MODEL", "gemini-2.5-flash-lite")
 MODEL_CHAIN: List[str] = [
     PRIMARY_MODEL,
     FALLBACK_MODEL,
-    "gemini-2.5-flash",
     "gemini-2.0-flash",
 ]
 
@@ -35,7 +34,7 @@ GROQ_FALLBACK_MODEL = os.getenv("GROQ_FALLBACK_MODEL", "openai/gpt-oss-20b")
 GROQ_MODEL_CHAIN: List[str] = [
     GROQ_PRIMARY_MODEL,
     GROQ_FALLBACK_MODEL,
-    "qwen/qwen3.8-27b",
+    "llama-3.3-70b-versatile",
 ]
 DEFAULT_GROQ_RPM = int(os.getenv("GROQ_RPM", "30"))
 AI_PROVIDER = os.getenv("AI_PROVIDER", "auto")

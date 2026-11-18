@@ -100,7 +100,7 @@ def is_groq_key_manager(km: Optional[KeyManager]) -> bool:
     if km is None or not hasattr(km, "_models") or not km._models:
         return False
     return any(
-        any(tag in m.lower() for tag in ["llama", "mixtral", "gemma", "whisper", "deepseek"])
+        any(tag in m.lower() for tag in ["llama", "mixtral", "gemma", "whisper", "deepseek", "gpt-oss", "qwen"])
         for m in km._models
     )
 
@@ -222,7 +222,9 @@ def call_groq(
             key = km.get_current_key()
             if not key:
                 raise ValueError(
-                    "No Groq API key configured. Please add a free Groq API key in the sidebar under 'API Key Configuration' (get one at https://console.groq.com/keys) or in .env."
+                    "No Groq API key configured. Set the GROQ_KEYS environment variable "
+                    "(Render dashboard, Streamlit secrets, or a local .env file). "
+                    "Get a free key at https://console.groq.com/keys"
                 )
 
         model_to_use = custom_model or km.active_model
@@ -420,9 +422,10 @@ def call_gemini(
             if is_quota_exhausted and groq_km.total_keys == 0:
                 if any(term in err_lower for term in ["per day limit exceeded", "retry in", "resource_exhausted"]):
                     raise RuntimeError(
-                        "⚠️ Gemini Free-Tier Daily Quota Limit (20 requests/day) Exceeded! "
-                        "Google has paused requests for this key for today.\n\n"
-                        "👉 Quick Fix (Instant): Add a free Groq API key in the sidebar under 'API Key Configuration' (get one in 30 seconds at https://console.groq.com/keys) or add more Gemini keys in .env."
+                        "Gemini free-tier daily quota exceeded (20 requests/day) and no Groq key is configured. "
+                        "Add a free Groq API key via the GROQ_KEYS environment variable "
+                        "(get one in 30 seconds at https://console.groq.com/keys), "
+                        "or add more keys to GEMINI_KEYS."
                     )
 
             # Check if this is a model availability or temporary high demand issue

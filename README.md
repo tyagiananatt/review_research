@@ -212,7 +212,7 @@ Run pytest:
 pytest -v tests
 ```
 
-All 18 unit and integration tests execute in under 5 seconds with zero external network dependencies.
+All 23 unit and integration tests execute in under 5 seconds with zero external network dependencies.
 
 ---
 
@@ -222,12 +222,34 @@ All 18 unit and integration tests execute in under 5 seconds with zero external 
 1. Push this repository to GitHub.
 2. Sign in to [share.streamlit.io](https://share.streamlit.io).
 3. Select your repository, set branch to `main`, and main file path to `app.py`.
-4. Under **Advanced Settings $\rightarrow$ Secrets**, enter your Gemini keys:
+4. Under **Advanced Settings $\rightarrow$ Secrets**, enter your API keys:
    ```toml
    GEMINI_KEYS = "AIzaSyKey1,AIzaSyKey2"
-   GEMINI_RPM = "15"
+   GROQ_KEYS = "gsk_key1,gsk_key2"
+   AI_PROVIDER = "auto"
    ```
 5. Click **Deploy**.
+
+### Deploying to Render (free tier)
+This repository includes a `render.yaml` Blueprint and a `.python-version` pin (Python 3.12.10), so a first deploy needs no manual configuration.
+
+**Option A — Blueprint (recommended):**
+1. Push this repository to GitHub.
+2. In the [Render dashboard](https://dashboard.render.com/), choose **New +** $\rightarrow$ **Blueprint** and select the repo.
+3. Render reads `render.yaml`, then prompts for the `GEMINI_KEYS` / `GROQ_KEYS` values (marked `sync: false`, so they are never committed).
+4. Click **Apply** — Render builds and deploys automatically.
+
+**Option B — Manual Web Service** (equivalent settings if you prefer to configure by hand):
+
+| Setting | Value |
+| :--- | :--- |
+| Runtime | `Python 3` |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true` |
+| Health Check Path | `/_stcore/health` |
+| Environment variables | `GEMINI_KEYS`, `GROQ_KEYS`, `AI_PROVIDER=auto` |
+
+> **Note on data persistence:** the free plan has an ephemeral filesystem, so the SQLite database (`data/reviewforge.db`) resets on every deploy and restart. To persist projects, attach a Render Disk to a paid instance and set the `REVIEWFORGE_DATA_DIR` environment variable to the disk's mount path (e.g. `/var/data`).
 
 ### Deploying via Docker
 A minimal `Dockerfile`:
