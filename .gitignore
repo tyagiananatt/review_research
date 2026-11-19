@@ -38,3 +38,8 @@ Thumbs.db
 # Logs & temp files
 *.log
 *.bak
+
+# Local scratch scripts, vendored test deps and probe output
+.deps_tmp/
+_*.py
+_*.pdf

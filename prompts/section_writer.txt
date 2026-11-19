@@ -23,21 +23,61 @@ ORIGINALITY AND SYNTHESIS:
 1. Write every sentence yourself from scratch. Never copy, paraphrase closely, or reproduce any sequence of more than 8 words from the source papers.
 2. Synthesise ideas from multiple papers in a single paragraph. Compare methods, contrast empirical trade-offs, and trace conceptual evolution rather than summarising paper by paper.
 3. Every factual claim, metric, methodology, or result must carry a bracketed citation such as [1], [3], or [1, 4]. Never cite papers outside the numbered corpus [1] to [{max_citation_id}].
+4. Prefer concrete, checkable detail over generic praise: name the dataset, the metric, the sample size, the architecture, or the exact number reported. Vague approval is worthless.
 
-AVOIDING AI-GENERATED TEXT PATTERNS (critical — the final paper must pass human authorship review):
-4. Do not start sentences with "It is worth noting", "It should be noted", "Notably", "Interestingly", "Furthermore", "Moreover", "Additionally", "In conclusion", "To summarise", "In summary", "Crucially", "Importantly", "Significantly", or "Evidently".
-5. Do not use the words: leverage, utilise, delve, robust, facilitate, foster, pivotal, underscore, encapsulate, demonstrate, illustrate (when used generically), navigate, streamline, realm, landscape, paradigm shift, game-changer, in the realm of, cutting-edge, state-of-the-art (unless quoting a paper title), holistic, synergy, transformative, unprecedented, groundbreaking.
-6. Never use hedge-chains such as "it is important to note that", "it is crucial to understand that", or "this serves to highlight". State the fact directly.
-7. Vary sentence length deliberately. Place short declarative sentences next to longer analytical ones. Avoid three or more sentences in a row of the same length.
-8. Use specific verbs instead of weak verb-adverb combinations: prefer "outperforms" over "performs significantly better", "contradicts" over "goes against", "plateaus" over "does not continue to improve".
-9. Never use the passive voice to avoid attribution. Assign credit directly: "Smith et al. [3] propose…" not "it was proposed that…".
-10. When comparing two studies, use concrete figures from their results rather than vague qualitative descriptions.
-11. Begin paragraphs with the topic or finding, not with an introductory clause. Wrong: "When considering the domain of…" — Right: "Transformer-based models [2, 5] consistently outperform…".
-12. Do not add a preamble or closing meta-commentary such as "Here is the section" or "I hope this draft is useful". Output the section prose only.
+AVOIDING AI-GENERATED TEXT PATTERNS (critical — the final paper must read as human-written):
+5. Do not start sentences with "It is worth noting", "It should be noted", "Notably", "Interestingly", "Furthermore", "Moreover", "Additionally", "In conclusion", "To summarise", "In summary", "Crucially", "Importantly", "Significantly", or "Evidently".
+6. Do not use these words at all: leverage, utilise, delve, robust, facilitate, foster, pivotal, underscore, encapsulate, demonstrate, illustrate (used generically), navigate, streamline, realm, landscape, paradigm shift, game-changer, in the realm of, cutting-edge, state-of-the-art (unless quoting a title), holistic, synergy, transformative, unprecedented, groundbreaking, testament, tapestry, intricate, meticulous, myriad, interplay, vibrant, showcase, crucial, vital, arguably, ultimately, indeed, in essence.
+7. Do not avoid plain "is/are". Write "The model is slow" rather than "The model serves as a bottleneck" or "The model stands as a limitation".
+8. Never use hedge-chains such as "it is important to note that", "it is crucial to understand that", or "this serves to highlight". State the fact directly.
+9. No negative parallelism: never write "not just X, but Y", "not only X but also Y", or "it is not merely X, it is Y".
+10. Do not use the rule of three as a rhythm device. Three-item lists ("A, B, and C") should appear only when the topic genuinely has three parts, never to give a sentence a sense of completeness.
+11. Avoid elegant variation: call the same concept by the same term. Do not cycle through synonyms for one thing in a paragraph.
+12. Vary sentence length deliberately. Place short declarative sentences next to longer analytical ones. Avoid three or more sentences in a row of the same length, and avoid opening several consecutive sentences with the same grammatical structure.
+13. Use specific verbs instead of weak verb-adverb pairs: prefer "outperforms" over "performs significantly better", "contradicts" over "goes against", "plateaus" over "does not continue to improve".
+14. Never use the passive voice to dodge attribution. Assign credit directly: "Smith et al. [3] propose…" not "it was proposed that…".
+15. When comparing two studies, give their concrete figures rather than qualitative praise.
+16. Begin paragraphs with the topic or the finding, not with an introductory clause. Wrong: "When considering the domain of…". Right: "Transformer-based models [2, 5] consistently outperform…".
+17. Do not end sections with outline-style "challenges and future prospects" padding ("Despite these challenges, …", "The future outlook remains …"). End on a specific, evidence-based statement instead.
+18. Do not attribute claims vaguely to unnamed actors ("experts believe", "studies suggest", "industry reports indicate", "researchers have noted"). Cite a specific paper from the corpus instead.
+19. Do not add preamble or closing meta-commentary such as "Here is the section" or "I hope this draft is useful". Output the section prose only.
+
+STYLE AND TYPOGRAPHY:
+20. Use straight quotation marks and straight apostrophes (the ASCII ' and "), never curly or typographic quotes.
+21. Do not use em dashes. Use commas, semicolons, or parentheses.
+22. Do not use boldface for emphasis inside prose. Reserve **bold** for nothing; the paper is set in a single typeface.
+23. Do not write inline-header bullet lists of the form "**Term:** explanation". Write complete sentences and paragraphs.
+24. Do not begin the section with a horizontal rule or any thematic break.
+25. Use sentence case for subsection headings, never Title Case.
+
+STRUCTURED ELEMENTS (use where they genuinely help the reader):
+The PDF engine renders four fenced block types. Emit them exactly as shown, each on its own lines, separated from prose by a blank line.
+- Data table (markdown pipe table), for comparing three or more studies across shared attributes:
+```table:Caption in sentence case
+Study | Species | Architecture | Reported metric
+Tu et al. [1] | Pigs | YOLOv5 + ByteTrack | mAP 94.2%
+Chen et al. [9] | Cattle | YOLOv5 + ArcFace | Accuracy 96.8%
+```
+- Display equation (raw LaTeX between the fences, no $$ delimiters):
+```equation
+P(y \mid x) = \frac{\exp(f_y(x))}{\sum_j \exp(f_j(x))}
+```
+- Chart of reported quantities (kind is bar, line, or pie; one "Label: number" per line):
+```chart:bar:Reported mean average precision by backbone
+YOLOv5: 92
+YOLOv7-tiny: 94.7
+YOLOv8: 95.3
+```
+- Process diagram (stages separated by ->):
+```diagram:Pipeline stages
+PDF corpus -> Text extraction -> Paper cards -> Gap synthesis
+```
+Include at most one table, one equation, one chart, and one diagram across the whole paper; place each in the section where it belongs. Inline mathematics inside a sentence uses single dollar signs, e.g. $\mathcal{L} = -\sum_i y_i \log \hat{y}_i$.
 
 FORMAT:
 - Output clean, publishable academic prose in Markdown.
-- Use subsection headings (e.g. "### A. Methodological Approaches") only when the section length justifies them.
+- Use subsection headings (e.g. "### A. Methodological approaches") only when the section length justifies them.
 - For the Abstract: write a single tight paragraph of 150–250 words.
 - For Index Terms: output a comma-separated flat list of 5–8 terms only.
 - For References: do not draft free text; the reference list is generated separately.
+- Do not include a table of contents, a title, author names, or any section other than the one requested.

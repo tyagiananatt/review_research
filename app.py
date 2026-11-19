@@ -21,7 +21,9 @@ import streamlit as st
 
 from config import (
     DEFAULT_GROQ_RPM,
+    DEFAULT_LENGTH_OPTION,
     DEFAULT_RPM,
+    IEEE_PDF_PAGES,
     LENGTH_OPTIONS,
     PROMPTS_DIR,
     REVIEW_SECTIONS,
@@ -82,6 +84,7 @@ from core.llm import (
     get_key_manager,
 )
 from core.paper_card import generate_paper_card
+from core.pdf_export import generate_ieee_pdf
 from core.pdf_extract import process_pdf
 from core.similarity import (
     CorpusIndex,
@@ -979,7 +982,14 @@ with st.sidebar:
     # Generation settings
     st.markdown("**Generation Settings**")
     tone_sel = st.selectbox("Writing Tone", TONE_OPTIONS, index=0, key="tone_sel")
-    length_sel = st.selectbox("Section Length", list(LENGTH_OPTIONS.keys()), index=1, key="length_sel")
+    length_sel = st.selectbox(
+        "Section Length",
+        list(LENGTH_OPTIONS.keys()),
+        index=list(LENGTH_OPTIONS.keys()).index(DEFAULT_LENGTH_OPTION),
+        key="length_sel",
+        help=f"The IEEE PDF is typeset to exactly {IEEE_PDF_PAGES} pages; the "
+             f"'{DEFAULT_LENGTH_OPTION}' profile is calibrated for that length.",
+    )
     sim_threshold = st.slider(
         "Similarity Threshold",
         0.50, 0.95, SIMILARITY_SENTENCE_THRESHOLD, 0.05,
@@ -1204,6 +1214,10 @@ elif stage == "processing":
     topic = st.session_state.get("topic", "Research Topic")
     description = st.session_state.get("description", "")
 
+    # Any newly generated paper invalidates previously compiled downloads.
+    st.session_state.pop("generated_docx", None)
+    st.session_state.pop("generated_pdf", None)
+
     if st.session_state.get("_skip_download"):
         # User uploaded PDFs manually — skip the download phase
         st.session_state.pop("_skip_download", None)
@@ -1270,7 +1284,7 @@ elif stage == "processing":
                         previous_sections=sections_state,
                         custom_instructions=custom_directive,
                         tone=st.session_state.get("tone_sel", TONE_OPTIONS[0]),
-                        target_length=st.session_state.get("length_sel", "Standard"),
+                        target_length=st.session_state.get("length_sel", DEFAULT_LENGTH_OPTION),
                         key_manager=km,
                     )
                     sim_rep = check_section_similarity(sec_text, corpus_index, threshold=sim_threshold, allow_direct_quotes=True)
@@ -1335,7 +1349,7 @@ elif stage == "processing":
             topic=topic,
             description=description,
             tone=st.session_state.get("tone_sel", TONE_OPTIONS[0]),
-            length=st.session_state.get("length_sel", "Standard"),
+            length=st.session_state.get("length_sel", DEFAULT_LENGTH_OPTION),
             sim_threshold=st.session_state.get("sim_threshold", SIMILARITY_SENTENCE_THRESHOLD),
         )
 
@@ -1359,22 +1373,56 @@ elif stage == "done":
 
     # Download row
     st.markdown('<div class="section-heading">Download Your Paper</div>', unsafe_allow_html=True)
-    dl1, dl2, dl3, dl4 = st.columns(4)
+    dl1, dl2, dl3, dl4, dl5 = st.columns(5)
 
     slug = topic.lower().replace(" ", "_")[:40]
 
+    def _compile_pdf() -> None:
+        """Typeset the current sections into the cached PDF download."""
+        with st.spinner(f"Typesetting the {IEEE_PDF_PAGES}-page IEEE paper..."):
+            try:
+                pdf_stream = generate_ieee_pdf(
+                    sections=sections,
+                    papers=papers,
+                    paper_title=topic,
+                    authors="Researcher and Co-Authors",
+                    affiliations="Department of Computer Science and Engineering",
+                    include_ai_appendix=True,
+                    target_pages=IEEE_PDF_PAGES,
+                )
+                st.session_state["generated_pdf"] = pdf_stream.getvalue()
+                st.rerun()
+            except Exception as e:
+                st.error(f"PDF export failed: {e}")
+
     with dl1:
-        if st.session_state.get("generated_docx"):
+        if st.session_state.get("generated_pdf"):
             st.download_button(
-                "IEEE Word Document (.docx)",
-                data=st.session_state["generated_docx"],
-                file_name=f"{slug}_ieee.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                f"{IEEE_PDF_PAGES}-Page IEEE PDF",
+                data=st.session_state["generated_pdf"],
+                file_name=f"{slug}_ieee.pdf",
+                mime="application/pdf",
                 type="primary",
                 use_container_width=True,
             )
+            if st.button("Recompile PDF", use_container_width=True):
+                st.session_state.pop("generated_pdf", None)
+                _compile_pdf()
         else:
-            if st.button("Compile .docx Now", type="primary", use_container_width=True):
+            if st.button("Compile IEEE PDF", type="primary", use_container_width=True):
+                _compile_pdf()
+
+    with dl2:
+        if st.session_state.get("generated_docx"):
+            st.download_button(
+                "IEEE Word (.docx)",
+                data=st.session_state["generated_docx"],
+                file_name=f"{slug}_ieee.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                use_container_width=True,
+            )
+        else:
+            if st.button("Compile .docx", use_container_width=True):
                 try:
                     buf = generate_ieee_docx(
                         sections=sections,
@@ -1389,7 +1437,7 @@ elif stage == "done":
                 except Exception as e:
                     st.error(f"Export failed: {e}")
 
-    with dl2:
+    with dl3:
         md_out = generate_markdown_export(sections, papers, paper_title=topic)
         st.download_button(
             "Markdown (.md)",
@@ -1399,20 +1447,20 @@ elif stage == "done":
             use_container_width=True,
         )
 
-    with dl3:
+    with dl4:
         bib_out = generate_bibtex_export(papers)
         st.download_button(
-            "BibTeX References (.bib)",
+            "BibTeX (.bib)",
             data=bib_out,
             file_name=f"{slug}.bib",
             mime="text/plain",
             use_container_width=True,
         )
 
-    with dl4:
+    with dl5:
         sim_report = generate_similarity_report_markdown(sections)
         st.download_button(
-            "Similarity Report (.md)",
+            "Similarity Report",
             data=sim_report,
             file_name=f"{slug}_similarity.md",
             mime="text/markdown",
@@ -1470,6 +1518,7 @@ elif stage == "done":
                             similarity_score=score,
                             similarity_report=rep,
                         )
+                        st.session_state.pop("generated_pdf", None)
                         st.success("Saved.")
                         st.rerun()
                 with col_regen:
@@ -1487,7 +1536,7 @@ elif stage == "done":
                                     previous_sections=sections,
                                     custom_instructions=f"Paper Topic: {topic}.",
                                     tone=st.session_state.get("tone_sel", TONE_OPTIONS[0]),
-                                    target_length=st.session_state.get("length_sel", "Standard"),
+                                    target_length=st.session_state.get("length_sel", DEFAULT_LENGTH_OPTION),
                                     key_manager=km,
                                 )
                                 new_rep = check_section_similarity(
@@ -1502,6 +1551,7 @@ elif stage == "done":
                                     similarity_score=new_rep["overall_score"],
                                     similarity_report=new_rep,
                                 )
+                                st.session_state.pop("generated_pdf", None)
                                 st.success("Section regenerated.")
                                 st.rerun()
                             except Exception as e:

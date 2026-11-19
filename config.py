@@ -167,10 +167,19 @@ TONE_OPTIONS = [
 ]
 
 LENGTH_OPTIONS = {
+    # Calibrated so a full review (9 sections + ~25 references) typesets to the
+    # six-page IEEE layout produced by core/pdf_export.py.
+    "6-Page IEEE Review": "~450 - 520 words per section",
     "Concise": "~300 - 500 words per section",
     "Standard": "~600 - 900 words per section",
     "Comprehensive": "~1,000 - 1,500 words per section",
 }
+
+# Default length profile for new papers (drives the exact-six-page target).
+DEFAULT_LENGTH_OPTION = "6-Page IEEE Review"
+
+# Page count targeted by the IEEE PDF export.
+IEEE_PDF_PAGES = 6
 
 
 def safe_fill_template(template: str, **kwargs: Any) -> str:
